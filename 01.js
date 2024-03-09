@@ -22,6 +22,9 @@ let banana_qualidade = []
 
 let varIndependente = []
 
+
+let provaReal = []
+
 for (const cellAdress in DB3) {
     const valor = DB3[cellAdress].v
     if (cellAdress.startsWith('A')) banana_tamanho.push(valor)
@@ -135,10 +138,37 @@ function calcularPrevisao(tamanho, peso, docura, maciez, tempoColheita, amadurec
     return previsao;
 }
 
+function validarReal(){
+    let igual = 0
+    let diferent = 0
+
+    for (let i = 0; i<banana_qualidade.length;i++){
 
 
-console.log(`Qualidade prevista da maça baseada em suas características(Quanto mais perto de 1 melhor): ${(n1).toFixed(2)}`);
-  
+        provaReal.push(calcularPrevisao(banana_tamanho[i],banana_peso[i],banana_docura[i],banana_macies[i],banana_tempoColheira[i],banana_amadurecimento[i],banana_acidez[i]))
+
+    }
+    for (let i = 0; i<banana_qualidade.length;i++){
+
+
+        if(banana_qualidade[i] == classificarValor(provaReal[i]))
+        {   
+
+            igual += 1
+        }
+        else
+        {
+            diferent += 1
+
+            console.log(banana_qualidade[i], 'valor', provaReal[i] )
+        }
+
+       
+
+    }
+
+    console.log(`Igual:${igual}, Diferente: ${diferent}`)
+}
 
   function classificarValor(valorPrevisto) {
     if (valorPrevisto >= 0.50 && valorPrevisto <= 1.50) {
@@ -149,9 +179,6 @@ console.log(`Qualidade prevista da maça baseada em suas características(Quanto
 }
 
 
-function determinarValor(){
-
-}
 
 const valoresClassificados = varIndependente.map((vars, index) => {
     const valorPrevisto = coeficientes[0] + vars.reduce((acc, cur, i) => acc + cur * coeficientes[i + 1], 0);
@@ -167,6 +194,8 @@ const acertos = valoresClassificados.filter(item => item.classificado === item.r
 const taxaAcerto = acertos.length / valoresClassificados.length;
 
 console.log(`Taxa de acerto da aplicação: ${(taxaAcerto * 100).toFixed(2)}%`)
+
+
 
 
 
