@@ -1,13 +1,7 @@
-// Matheus Andrade e Gabriel Alves
-const MLR = require("ml-regression-multivariate-linear");
 const numeric = require('numeric')
-
-const fs = require('fs')
 const xlsx = require('xlsx');
-const { type } = require("os");
 
 const DB = xlsx.readFile('./DataSet/DataBase-AppleQuality.xlsx')
-
 const DB3 = DB.Sheets['banana_quality']
 
 let banana_tamanho = []
@@ -33,7 +27,7 @@ for (const cellAdress in DB3) {
     else if (cellAdress.startsWith('H')) banana_qualidade.push(valor)
 }
 
-function prepararDate() {
+function prepararData() {
     for (let i = 0; i < banana_acidez.length; i++) {
         banana_tamanho[i] = JSON.parse(JSON.stringify(banana_tamanho[i]))
         banana_peso[i] = JSON.parse(JSON.stringify(banana_peso[i]))
@@ -42,7 +36,6 @@ function prepararDate() {
         banana_tempoColheira[i] = JSON.parse(JSON.stringify(banana_tempoColheira[i]))
         banana_amadurecimento[i] = JSON.parse(JSON.stringify(banana_amadurecimento[i]))
         banana_acidez[i] = JSON.parse(JSON.stringify(banana_acidez[i]))
-
         banana_qualidade[i] = JSON.parse(JSON.stringify(banana_qualidade[i]))
 
         varIndependente.push([
@@ -57,22 +50,19 @@ function prepararDate() {
     }
 }
 
-prepararDate()
+prepararData()
 
 function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
     const n = varIndependente.length;
     const k = varIndependente[0].length;
 
-    // Adicionar uma coluna de 1s para representar o termo de intercepção
     const X = varIndependente.map(row => [1, ...row]);
 
-    // Calcular a transposta de X
     const XT = [];
     for (let j = 0; j < k + 1; j++) {
         XT.push(X.map(row => row[j]));
     }
 
-    // Calcular XT * X
     const XTX = [];
     for (let i = 0; i < k + 1; i++) {
         const row = [];
@@ -86,10 +76,8 @@ function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
         XTX.push(row);
     }
 
-    // Calcular a inversa de XT * X
     const XTXInv = numeric.inv(XTX);
 
-    // Calcular XT * Y
     const XTY = [];
     for (let i = 0; i < k + 1; i++) {
         let sum = 0;
@@ -99,7 +87,6 @@ function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
         XTY.push(sum);
     }
 
-    // Calcular os coeficientes beta
     const beta = [];
     for (let i = 0; i < k + 1; i++) {
         let sum = 0;
@@ -112,8 +99,6 @@ function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
     return beta;
 }
 
-
-
 const coeficientes = calcularRegressaoLinearMultipla(varIndependente, banana_qualidade);
 
 console.log(coeficientes)
@@ -123,20 +108,15 @@ function preverValor(independentes) {
       throw new Error('Número incorreto de variáveis independentes fornecidas.');
     }
   
-    let valorPrevisto = coeficientes[0]; // Começar com o coeficiente de interceptação
+    let valorPrevisto = coeficientes[0];
     for (let i = 0; i < independentes.length; i++) {
-      valorPrevisto += independentes[i] * coeficientes[i + 1]; // Adicionar o produto da variável independente com o coeficiente correspondente
+      valorPrevisto += independentes[i] * coeficientes[i + 1];
     }
   
     return valorPrevisto;
-  }
-  
-  const novasIndependentes = [-2.6608794, -20446665, 15902641, 14997064, -15818563, -16058589, 14356443];
-  const valorPrevisto = preverValor(novasIndependentes);
-  console.log(`Valor previsto: ${valorPrevisto}`);
-  
+}
 
-  function classificarValor(valorPrevisto) {
+function classificarValor(valorPrevisto) {
     if (valorPrevisto >= 0.50 && valorPrevisto <= 1.50) {
         return 1;
     } else {
@@ -144,6 +124,9 @@ function preverValor(independentes) {
     }
 }
 
+const novasIndependentes = [-2.6608794, -20446665, 15902641, 14997064, -15818563, -16058589, 14356443];
+const valorPrevisto = preverValor(novasIndependentes);
+console.log(`Valor previsto: ${valorPrevisto}`);
 
 const valoresClassificados = varIndependente.map((vars, index) => {
     const valorPrevisto = coeficientes[0] + vars.reduce((acc, cur, i) => acc + cur * coeficientes[i + 1], 0);
@@ -153,7 +136,6 @@ const valoresClassificados = varIndependente.map((vars, index) => {
         real: banana_qualidade[index]
     };
 });
-
 
 const acertos = valoresClassificados.filter(item => item.classificado === item.real);
 const taxaAcerto = acertos.length / valoresClassificados.length;
