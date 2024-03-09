@@ -1,10 +1,7 @@
 // Matheus Andrade e Gabriel Alves
 const MLR = require("ml-regression-multivariate-linear");
-<<<<<<< HEAD
-=======
 const numeric = require('numeric')
 
->>>>>>> f640c92941d999dc8eccba0c0cdd95eb940ac2c5
 const fs = require('fs')
 const xlsx = require('xlsx');
 const { type } = require("os");
@@ -62,12 +59,6 @@ function prepararDate() {
 
 prepararDate()
 
-<<<<<<< HEAD
-
-
-
-
-=======
 function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
     const n = varIndependente.length;
     const k = varIndependente[0].length;
@@ -124,7 +115,6 @@ function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
 
 // Calcular a regressão linear múltipla
 const coeficientes = calcularRegressaoLinearMultipla(varIndependente, banana_qualidade);
->>>>>>> f640c92941d999dc8eccba0c0cdd95eb940ac2c5
 
 console.log(coeficientes)
 
