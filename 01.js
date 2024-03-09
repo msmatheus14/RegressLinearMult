@@ -1,14 +1,14 @@
 // Matheus Andrade e Gabriel Alves
 const MLR = require("ml-regression-multivariate-linear");
+const numeric = require('numeric')
 
 const fs = require('fs')
 const xlsx = require('xlsx');
 const { type } = require("os");
 
-const DB = xlsx.readFile ('DataBase-AppleQuality.xlsx')
+const DB = xlsx.readFile('DataBase-AppleQuality.xlsx')
 
 const DB3 = DB.Sheets['banana_quality']
-
 
 let banana_tamanho = []
 let banana_peso = []
@@ -17,74 +17,24 @@ let banana_macies = []
 let banana_tempoColheira = []
 let banana_amadurecimento = []
 let banana_acidez = []
-
-
-//Variável dependente
 let banana_qualidade = []
 
 let varIndependente = []
 
-
-// Faz leitura dos valores no excel e adiciona dentro dos vetores
-for (const cellAdress in DB3){
-
-        const valor = DB3[cellAdress].v
-        
-        if (cellAdress.startsWith('A')){
-           
-            banana_tamanho.push(valor)
-        }
-        else
-        if (cellAdress.startsWith('B')){
-           
-            banana_peso.push(valor)
-        }
-        else
-        if (cellAdress.startsWith('C')){
-           
-            banana_docura.push(valor)
-        }
-        else
-        if (cellAdress.startsWith('D')){
-           
-            banana_macies.push(valor)
-        }
-        else
-        if (cellAdress.startsWith('E')){
-           
-            banana_tempoColheira.push(valor)
-        }
-        else
-        if (cellAdress.startsWith('F')){
-           
-            banana_amadurecimento.push(valor)
-        }
-        else
-        if (cellAdress.startsWith('G')){
-           
-            banana_acidez.push(valor)
-            
-        }
-        else
-        if (cellAdress.startsWith('H')){
-           
-            banana_qualidade.push(valor)
-        }
-        
-        
-
+for (const cellAdress in DB3) {
+    const valor = DB3[cellAdress].v
+    if (cellAdress.startsWith('A')) banana_tamanho.push(valor)
+    else if (cellAdress.startsWith('B')) banana_peso.push(valor)
+    else if (cellAdress.startsWith('C')) banana_docura.push(valor)
+    else if (cellAdress.startsWith('D')) banana_macies.push(valor)
+    else if (cellAdress.startsWith('E')) banana_tempoColheira.push(valor)
+    else if (cellAdress.startsWith('F')) banana_amadurecimento.push(valor)
+    else if (cellAdress.startsWith('G')) banana_acidez.push(valor)
+    else if (cellAdress.startsWith('H')) banana_qualidade.push(valor)
 }
 
-
-function calculaRegressaoLinearMultipla(){
-
-}
-
-function prepararDate()
-{
-
-    for (var i; i < banana_acidez.length; i++)
-    {
+function prepararDate() {
+    for (let i = 0; i < banana_acidez.length; i++) {
         banana_tamanho[i] = JSON.parse(JSON.stringify(banana_tamanho[i]))
         banana_peso[i] = JSON.parse(JSON.stringify(banana_peso[i]))
         banana_docura[i] = JSON.parse(JSON.stringify(banana_docura[i]))
@@ -92,24 +42,24 @@ function prepararDate()
         banana_tempoColheira[i] = JSON.parse(JSON.stringify(banana_tempoColheira[i]))
         banana_amadurecimento[i] = JSON.parse(JSON.stringify(banana_amadurecimento[i]))
         banana_acidez[i] = JSON.parse(JSON.stringify(banana_acidez[i]))
-    
-        banana_qualidade[i] = Json.parse(JSON.stringify(banana_qualidade[i]))
-    
-        varIndependente.push([banana_tamanho[i], banana_peso[i], banana_docura[i], banana_macies[i], banana_tempoColheira[i], banana_amadurecimento[i], banana_acidez[i]])
+
+        banana_qualidade[i] = JSON.parse(JSON.stringify(banana_qualidade[i]))
+
+        varIndependente.push([
+            banana_tamanho[i],
+            banana_peso[i],
+            banana_docura[i],
+            banana_macies[i],
+            banana_tempoColheira[i],
+            banana_amadurecimento[i],
+            banana_acidez[i]
+        ])
     }
-
-   
 }
-
 
 prepararDate()
 
-//const mrl = new MLR(varIndependente, banana_qualidade) 
-
-console.log(banana_qualidade)
-
-
-function calcularRegressaoLinearMultipla(varIndependente, banana_qualidade) {
+function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
     const n = varIndependente.length;
     const k = varIndependente[0].length;
 
@@ -162,9 +112,6 @@ function calcularRegressaoLinearMultipla(varIndependente, banana_qualidade) {
     return beta;
 }
 
-
-
 // Calcular a regressão linear múltipla
 const coeficientes = calcularRegressaoLinearMultipla(varIndependente, banana_qualidade);
-
 console.log('Coeficientes:', coeficientes);

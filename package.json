@@ -2,6 +2,7 @@
   "dependencies": {
     "ml-regression": "^5.0.0",
     "ml-regression-multivariate-linear": "^2.0.4",
+    "numeric": "^1.2.6",
     "xlsx": "^0.18.5"
   }
 }
