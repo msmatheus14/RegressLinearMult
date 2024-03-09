@@ -6,7 +6,7 @@ const fs = require('fs')
 const xlsx = require('xlsx');
 const { type } = require("os");
 
-const DB = xlsx.readFile('./DataSet/DataBase-AppleQuality.xlsx')
+const DB = xlsx.readFile('DataBase-AppleQuality.xlsx')
 
 const DB3 = DB.Sheets['main']
 
@@ -19,9 +19,6 @@ let banana_tempoColheira = []
 let banana_amadurecimento = []
 let banana_acidez = []
 let banana_qualidade = []
-
-
-
 
 let varIndependente = []
 
@@ -39,6 +36,7 @@ for (const cellAdress in DB3) {
 
 function prepararDate() {
     for (let i = 0; i < banana_acidez.length; i++) {
+        
         banana_tamanho[i] = JSON.parse(JSON.stringify(banana_tamanho[i]))
         banana_peso[i] = JSON.parse(JSON.stringify(banana_peso[i]))
         banana_docura[i] = JSON.parse(JSON.stringify(banana_docura[i]))
@@ -137,7 +135,7 @@ function calcularPrevisao(tamanho, peso, docura, maciez, tempoColheita, amadurec
     return previsao;
 }
 
-const n1 = calcularPrevisao(banana_tamanho[20], banana_peso[20], banana_docura[20], banana_macies[20], banana_tempoColheira[20], banana_amadurecimento[20], banana_acidez[20]);
+
 
 console.log(`Qualidade prevista da maça baseada em suas características(Quanto mais perto de 1 melhor): ${(n1).toFixed(2)}`);
   
@@ -171,22 +169,4 @@ const taxaAcerto = acertos.length / valoresClassificados.length;
 console.log(`Taxa de acerto da aplicação: ${(taxaAcerto * 100).toFixed(2)}%`)
 
 
-
-function Max(vetor){
-
-    let max = vetor[0]
-
-    for (let i = 0; i<vetor.length;i++)
-    {
-        if (max < vetor[i])
-        {
-            max = vetor[i]
-        }
-    }
-
-    return max
-}
-
-
-//console.log(Max(banana_macies))
 
