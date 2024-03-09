@@ -120,7 +120,7 @@ function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
 
 const coeficientes = calcularRegressaoLinearMultipla(varIndependente, banana_qualidade);
 
-console.log(coeficientes)
+console.log('Coeficientes: ',coeficientes)
 
 
 function calcularPrevisao(tamanho, peso, docura, maciez, tempoColheita, amadurecimento, acidez) {
@@ -139,7 +139,7 @@ function calcularPrevisao(tamanho, peso, docura, maciez, tempoColheita, amadurec
 
 const n1 = calcularPrevisao(banana_tamanho[20], banana_peso[20], banana_docura[20], banana_macies[20], banana_tempoColheira[20], banana_amadurecimento[20], banana_acidez[20]);
 
-console.log(`Valor previsto: ${n1}`);
+console.log(`Qualidade prevista da maça baseada em suas características(Quanto mais perto de 1 melhor): ${(n1).toFixed(2)}`);
   
 
   function classificarValor(valorPrevisto) {
@@ -168,7 +168,7 @@ const valoresClassificados = varIndependente.map((vars, index) => {
 const acertos = valoresClassificados.filter(item => item.classificado === item.real);
 const taxaAcerto = acertos.length / valoresClassificados.length;
 
-console.log(`Taxa de acerto: ${(taxaAcerto * 100).toFixed(2)}%`)
+console.log(`Taxa de acerto da aplicação: ${(taxaAcerto * 100).toFixed(2)}%`)
 
 
 
