@@ -1,6 +1,5 @@
 // Matheus Andrade e Gabriel Alves
 const MLR = require("ml-regression-multivariate-linear");
-
 const fs = require('fs')
 const xlsx = require('xlsx');
 const { type } = require("os");
@@ -104,67 +103,15 @@ function prepararDate()
 
 prepararDate()
 
-//const mrl = new MLR(varIndependente, banana_qualidade) 
+
 
 console.log(banana_qualidade)
 
+const mlr = new MLR(varIndependente, banana_qualidade);
 
-function calcularRegressaoLinearMultipla(varIndependente, banana_qualidade) {
-    const n = varIndependente.length;
-    const k = varIndependente[0].length;
+const newInput = [-1.9249682, 46807805, 30778325, -14721768, 2947986, 24355695, 27129033];
+const predictedOutput = mlr.predict(newInput);
+console.log(`Previsão: ${predictedOutput}`);
 
-    // Adicionar uma coluna de 1s para representar o termo de intercepção
-    const X = varIndependente.map(row => [1, ...row]);
-
-    // Calcular a transposta de X
-    const XT = [];
-    for (let j = 0; j < k + 1; j++) {
-        XT.push(X.map(row => row[j]));
-    }
-
-    // Calcular XT * X
-    const XTX = [];
-    for (let i = 0; i < k + 1; i++) {
-        const row = [];
-        for (let j = 0; j < k + 1; j++) {
-            let sum = 0;
-            for (let t = 0; t < n; t++) {
-                sum += XT[i][t] * X[t][j];
-            }
-            row.push(sum);
-        }
-        XTX.push(row);
-    }
-
-    // Calcular a inversa de XT * X
-    const XTXInv = numeric.inv(XTX);
-
-    // Calcular XT * Y
-    const XTY = [];
-    for (let i = 0; i < k + 1; i++) {
-        let sum = 0;
-        for (let t = 0; t < n; t++) {
-            sum += XT[i][t] * varDependente[t];
-        }
-        XTY.push(sum);
-    }
-
-    // Calcular os coeficientes beta
-    const beta = [];
-    for (let i = 0; i < k + 1; i++) {
-        let sum = 0;
-        for (let j = 0; j < k + 1; j++) {
-            sum += XTXInv[i][j] * XTY[j];
-        }
-        beta.push(sum);
-    }
-
-    return beta;
-}
-
-
-
-// Calcular a regressão linear múltipla
-const coeficientes = calcularRegressaoLinearMultipla(varIndependente, banana_qualidade);
 
 console.log('Coeficientes:', coeficientes);
