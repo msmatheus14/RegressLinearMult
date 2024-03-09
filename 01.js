@@ -1,7 +1,9 @@
 // Matheus Andrade e Gabriel Alves
+const MLR = require("ml-regression-multivariate-linear");
 
 const fs = require('fs')
-const xlsx = require('xlsx')
+const xlsx = require('xlsx');
+const { type } = require("os");
 
 const DB = xlsx.readFile ('DataBase-AppleQuality.xlsx')
 
@@ -80,11 +82,89 @@ function calculaRegressaoLinearMultipla(){
 
 function prepararDate()
 {
-    for( var i = 0; i<banana_tamanho.length;i++)
+
+    for (var i; i < banana_acidez.length; i++)
     {
+        banana_tamanho[i] = JSON.parse(JSON.stringify(banana_tamanho[i]))
+        banana_peso[i] = JSON.parse(JSON.stringify(banana_peso[i]))
+        banana_docura[i] = JSON.parse(JSON.stringify(banana_docura[i]))
+        banana_macies[i] = JSON.parse(JSON.stringify(banana_macies[i]))
+        banana_tempoColheira[i] = JSON.parse(JSON.stringify(banana_tempoColheira[i]))
+        banana_amadurecimento[i] = JSON.parse(JSON.stringify(banana_amadurecimento[i]))
+        banana_acidez[i] = JSON.parse(JSON.stringify(banana_acidez[i]))
+    
+        banana_qualidade[i] = Json.parse(JSON.stringify(banana_qualidade[i]))
+    
         varIndependente.push([banana_tamanho[i], banana_peso[i], banana_docura[i], banana_macies[i], banana_tempoColheira[i], banana_amadurecimento[i], banana_acidez[i]])
     }
+
+   
 }
 
+
 prepararDate()
-console.log(varIndependente)
+
+//const mrl = new MLR(varIndependente, banana_qualidade) 
+
+console.log(banana_qualidade)
+
+
+function calcularRegressaoLinearMultipla(varIndependente, banana_qualidade) {
+    const n = varIndependente.length;
+    const k = varIndependente[0].length;
+
+    // Adicionar uma coluna de 1s para representar o termo de intercepção
+    const X = varIndependente.map(row => [1, ...row]);
+
+    // Calcular a transposta de X
+    const XT = [];
+    for (let j = 0; j < k + 1; j++) {
+        XT.push(X.map(row => row[j]));
+    }
+
+    // Calcular XT * X
+    const XTX = [];
+    for (let i = 0; i < k + 1; i++) {
+        const row = [];
+        for (let j = 0; j < k + 1; j++) {
+            let sum = 0;
+            for (let t = 0; t < n; t++) {
+                sum += XT[i][t] * X[t][j];
+            }
+            row.push(sum);
+        }
+        XTX.push(row);
+    }
+
+    // Calcular a inversa de XT * X
+    const XTXInv = numeric.inv(XTX);
+
+    // Calcular XT * Y
+    const XTY = [];
+    for (let i = 0; i < k + 1; i++) {
+        let sum = 0;
+        for (let t = 0; t < n; t++) {
+            sum += XT[i][t] * varDependente[t];
+        }
+        XTY.push(sum);
+    }
+
+    // Calcular os coeficientes beta
+    const beta = [];
+    for (let i = 0; i < k + 1; i++) {
+        let sum = 0;
+        for (let j = 0; j < k + 1; j++) {
+            sum += XTXInv[i][j] * XTY[j];
+        }
+        beta.push(sum);
+    }
+
+    return beta;
+}
+
+
+
+// Calcular a regressão linear múltipla
+const coeficientes = calcularRegressaoLinearMultipla(varIndependente, banana_qualidade);
+
+console.log('Coeficientes:', coeficientes);
