@@ -6,7 +6,7 @@ const fs = require('fs')
 const xlsx = require('xlsx');
 const { type } = require("os");
 
-const DB = xlsx.readFile('D:\\Matheus\\Estudos\\TADS\\3° Semestre\\Inteligência Artificial\\Regressão Linear Mutipla\\DataSet\\DataBase-AppleQuality.xlsx')
+const DB = xlsx.readFile('./DataSet/DataBase-AppleQuality.xlsx')
 
 const DB3 = DB.Sheets['banana_quality']
 
@@ -113,8 +113,49 @@ function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
 }
 
 
-// Calcular a regressão linear múltipla
+
 const coeficientes = calcularRegressaoLinearMultipla(varIndependente, banana_qualidade);
 
 console.log(coeficientes)
 
+function preverValor(independentes) {
+    if (independentes.length !== coeficientes.length - 1) {
+      throw new Error('Número incorreto de variáveis independentes fornecidas.');
+    }
+  
+    let valorPrevisto = coeficientes[0]; // Começar com o coeficiente de interceptação
+    for (let i = 0; i < independentes.length; i++) {
+      valorPrevisto += independentes[i] * coeficientes[i + 1]; // Adicionar o produto da variável independente com o coeficiente correspondente
+    }
+  
+    return valorPrevisto;
+  }
+  
+  const novasIndependentes = [-2.6608794, -20446665, 15902641, 14997064, -15818563, -16058589, 14356443];
+  const valorPrevisto = preverValor(novasIndependentes);
+  console.log(`Valor previsto: ${valorPrevisto}`);
+  
+
+  function classificarValor(valorPrevisto) {
+    if (valorPrevisto >= 0.50 && valorPrevisto <= 1.50) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+
+const valoresClassificados = varIndependente.map((vars, index) => {
+    const valorPrevisto = coeficientes[0] + vars.reduce((acc, cur, i) => acc + cur * coeficientes[i + 1], 0);
+    return {
+        previsto: valorPrevisto,
+        classificado: classificarValor(valorPrevisto),
+        real: banana_qualidade[index]
+    };
+});
+
+
+const acertos = valoresClassificados.filter(item => item.classificado === item.real);
+const taxaAcerto = acertos.length / valoresClassificados.length;
+
+console.log(`Taxa de acerto: ${(taxaAcerto * 100).toFixed(2)}%`);
