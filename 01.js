@@ -118,4 +118,3 @@ const coeficientes = calcularRegressaoLinearMultipla(varIndependente, banana_qua
 
 console.log(coeficientes)
 
-
