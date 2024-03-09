@@ -4,7 +4,10 @@
     "ml-regression": "^5.0.0",
     "ml-regression-multivariate-linear": "^2.0.4",
     "numeric": "^1.2.6",
+<<<<<<< HEAD
     "os": "^0.1.2",
+=======
+>>>>>>> f640c92941d999dc8eccba0c0cdd95eb940ac2c5
     "xlsx": "^0.18.5"
   }
 }
