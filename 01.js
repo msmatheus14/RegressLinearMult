@@ -6,7 +6,7 @@ const fs = require('fs')
 const xlsx = require('xlsx');
 const { type } = require("os");
 
-const DB = xlsx.readFile('DataBase-AppleQuality.xlsx')
+const DB = xlsx.readFile('D:\\Matheus\\Estudos\\TADS\\3° Semestre\\Inteligência Artificial\\Regressão Linear Mutipla\\DataSet\\DataBase-AppleQuality.xlsx')
 
 const DB3 = DB.Sheets['banana_quality']
 
@@ -112,6 +112,10 @@ function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
     return beta;
 }
 
+
 // Calcular a regressão linear múltipla
 const coeficientes = calcularRegressaoLinearMultipla(varIndependente, banana_qualidade);
-console.log('Coeficientes:', coeficientes);
+
+console.log(coeficientes)
+
+
