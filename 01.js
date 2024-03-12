@@ -121,6 +121,11 @@ function calcularRegressaoLinearMultipla(varIndependente, varDependente) {
 
 const coeficientes = calcularRegressaoLinearMultipla(varIndependente, banana_qualidade);
 
+while(0 <2)
+{
+    
+}
+
 console.log('Coeficientes: ',coeficientes)
 
 
@@ -160,13 +165,14 @@ function validarReal(){
         {
             diferent += 1
 
-            console.log(banana_qualidade[i], 'valor', provaReal[i] )
         }
+
 
        
 
     }
 
+    console.log('Taxa de Acerto:', (igual/provaReal.length)*100,"%")
     console.log(`Igual:${igual}, Diferente: ${diferent}`)
 }
 
@@ -181,22 +187,72 @@ function validarReal(){
 
 
 
-const valoresClassificados = varIndependente.map((vars, index) => {
-    const valorPrevisto = coeficientes[0] + vars.reduce((acc, cur, i) => acc + cur * coeficientes[i + 1], 0);
-    return {
-        previsto: valorPrevisto,
-        classificado: classificarValor(valorPrevisto),
-        real: banana_qualidade[index]
-    };
-});
+// Função para calcular o coeficiente de determinação R²
+function calcularR2(previsoes, observados) {
+    const mediaObservados = observados.reduce((acc, curr) => acc + curr, 0) / observados.length;
+    const sst = observados.reduce((acc, curr) => acc + Math.pow(curr - mediaObservados, 2), 0);
+    const sse = previsoes.reduce((acc, curr, index) => acc + Math.pow(curr - observados[index], 2), 0);
+    const r2 = 1 - (sse / sst);
+    return r2;
+}
 
+// Função para calcular o erro médio quadrático (MSE)
+function calcularMSE(previsoes, observados) {
+    const mse = observados.reduce((acc, curr, index) => acc + Math.pow(curr - previsoes[index], 2), 0) / observados.length;
+    return mse;
+}
 
-const acertos = valoresClassificados.filter(item => item.classificado === item.real);
-const taxaAcerto = acertos.length / valoresClassificados.length;
+// Função para calcular a estatística F
+function calcularEstatisticaF(previsoes, observados, k) {
+    const sst = observados.reduce((acc, curr) => acc + Math.pow(curr - observados.reduce((acc, curr) => acc + curr, 0) / observados.length, 2), 0);
+    const sse = previsoes.reduce((acc, curr, index) => acc + Math.pow(curr - observados[index], 2), 0);
+    const f = ((sst - sse) / k) / (sse / (observados.length - k - 1));
+    return f;
+}
 
-console.log(`Taxa de acerto da aplicação: ${(taxaAcerto * 100).toFixed(2)}%`)
+// Função para calcular o valor p
+function calcularValorP(estatisticaF, k, n) {
+    const pValue = 1 - numeric.centralF.cdf(estatisticaF, k, n - k - 1);
+    return pValue;
+}
 
+// Função para avaliar o modelo usando as métricas R², MSE, estatística F e valor p
+function avaliarModelo(previsoes, observados, k) {
+    const r2 = calcularR2(previsoes, observados);
+    const mse = calcularMSE(previsoes, observados);
+    const estatisticaF = calcularEstatisticaF(previsoes, observados, k);
+    const pValue = calcularValorP(estatisticaF, k, observados.length);
+    return { r2, mse, estatisticaF, pValue };
+}
 
+// Função para validar as previsões do modelo
+function validarPrevisoes(previsoes, observados) {
+    let igual = 0;
+    let diferente = 0;
 
+    for (let i = 0; i < previsoes.length; i++) {
+        if (previsoes[i] === observados[i]) {
+            igual++;
+        } else {
+            diferente++;
+        }
+    }
 
+    const taxaAcerto = (igual / (igual + diferente)) * 100;
+    return { igual, diferente, taxaAcerto };
+}
 
+// Avaliar o modelo usando as métricas
+const avaliacao = avaliarModelo(previsoes, banana_qualidade, 7);
+console.log('Avaliação do Modelo:');
+console.log('R²:', avaliacao.r2);
+console.log('MSE:', avaliacao.mse);
+console.log('Estatística F:', avaliacao.estatisticaF);
+console.log('Valor p:', avaliacao.pValue);
+
+// Validar as previsões do modelo
+const validacaoPrevisoes = validarPrevisoes(previsoes, banana_qualidade);
+console.log('Validação das Previsões:');
+console.log('Igual:', validacaoPrevisoes.igual);
+console.log('Diferente:', validacaoPrevisoes.diferente);
+console.log('Taxa de Acerto:', validacaoPrevisoes.taxaAcerto, '%');
