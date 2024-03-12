@@ -180,6 +180,7 @@ function validarReal(){
 
 
 
+
 const valoresClassificados = varIndependente.map((vars, index) => {
     const valorPrevisto = coeficientes[0] + vars.reduce((acc, cur, i) => acc + cur * coeficientes[i + 1], 0);
     return {
