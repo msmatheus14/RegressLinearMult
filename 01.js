@@ -139,7 +139,7 @@ function calcularPrevisao(tamanho, peso, docura, maciez, tempoColheita, amadurec
     return previsao;
 }
 
-function validarReal(){
+function Acuracia(){
     let igual = 0
     let diferent = 0
 
@@ -168,7 +168,7 @@ function validarReal(){
 
     }
 
-    console.log('Taxa de Acerto:', (igual/provaReal.length)*100,"%")
+    console.log('Acurácia:', (igual/provaReal.length)*100,"%")
     console.log(`Igual:${igual}, Diferente: ${diferent}`)
 }
 
@@ -180,4 +180,90 @@ function validarReal(){
     }
 }
 
-validarReal()
+Acuracia()
+
+
+function calcularCoeficienteDeterminacao(y_true, y_pred) {
+    const n = y_true.length;
+
+    // Calcular a média dos valores reais
+    const mean_y_true = y_true.reduce((acc, curr) => acc + curr, 0) / n;
+
+    // Calcular a soma dos quadrados totais (SST)
+    const sst = y_true.reduce((acc, curr) => acc + Math.pow(curr - mean_y_true, 2), 0);
+
+    // Calcular a soma dos quadrados dos resíduos (SSE)
+    const sse = y_true.reduce((acc, curr, i) => acc + Math.pow(curr - y_pred[i], 2), 0);
+
+    // Calcular o coeficiente de determinação (R²)
+    const r_squared = 1 - (sse / sst);
+
+    return r_squared;
+}
+
+// Calcular os valores previstos para a base de dados
+let predicoes = [];
+for (let i = 0; i < banana_qualidade.length; i++) {
+    predicoes.push(calcularPrevisao(banana_tamanho[i], banana_peso[i], banana_docura[i], banana_macies[i], banana_tempoColheira[i], banana_amadurecimento[i], banana_acidez[i]));
+}
+
+// Calcular o coeficiente de determinação
+const r_squared = calcularCoeficienteDeterminacao(banana_qualidade, predicoes);
+console.log('Coeficiente de Determinação (R²):', r_squared);
+
+
+function calcularMSE(y_true, y_pred) {
+
+    const n = y_true.length;
+    let mse = 0;
+
+    // Calcula o quadrado da diferença entre cada valor previsto e real
+    for (let i = 0; i < n; i++) {
+        mse += Math.pow(y_true[i] - y_pred[i], 2);
+    }
+
+    // Divide pela quantidade total de observações
+    mse /= n;
+
+    return mse;
+}
+
+let predicoes2 = [];
+
+for (let i = 0; i < banana_qualidade.length; i++) {
+    predicoes2.push(calcularPrevisao(banana_tamanho[i], banana_peso[i], banana_docura[i], banana_macies[i], banana_tempoColheira[i], banana_amadurecimento[i], banana_acidez[i]));
+}
+
+const MSE = calcularMSE(banana_qualidade, predicoes2 )
+
+
+
+
+console.log("Erro Quadrático Médio:",MSE.toFixed(2))
+
+function calcularEstatisticaF(y_true, y_pred, k) {
+    const n = y_true.length;
+    const p = k + 1; // Número de variáveis independentes mais o termo de interceptação
+
+    // Calcular a soma dos quadrados dos resíduos (SSE)
+    const sse = y_true.reduce((acc, curr, i) => acc + Math.pow(curr - y_pred[i], 2), 0);
+
+    // Calcular o quadrado médio do erro (MSE)
+    const mse = sse / (n - p);
+
+    // Calcular a soma dos quadrados totais (SST)
+    const mean_y_true = y_true.reduce((acc, curr) => acc + curr, 0) / n;
+    const sst = y_true.reduce((acc, curr) => acc + Math.pow(curr - mean_y_true, 2), 0);
+
+    // Calcular a estatística F
+    const f_statistic = (sst / p) / mse;
+
+    return f_statistic;
+}
+
+
+const estatisticaF = calcularEstatisticaF(banana_qualidade, predicoes, varIndependente[0].length);
+
+console.log('Estatística F:', estatisticaF);
+
+

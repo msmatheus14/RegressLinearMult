@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "fs": "^0.0.1-security",
+    "jstat": "^1.9.6",
     "ml-regression": "^5.0.0",
     "ml-regression-multivariate-linear": "^2.0.4",
     "numeric": "^1.2.6",
